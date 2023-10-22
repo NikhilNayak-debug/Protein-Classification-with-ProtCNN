@@ -22,15 +22,15 @@ The data used for this project is sourced from the PFAM dataset, which is availa
 
 The codebase has been tested with the following Python version and dependencies:
 
-- Python 3.7.4
-- matplotlib 3.4.1
-- numpy 1.18.5
-- pandas 1.2.3
-- pytorch-lightning 1.5.3
-- seaborn 0.11.1
-- tensorboard 2.2.2
-- torch 1.8.1
-- torchmetrics 0.6.0
+- Python 3.10.12
+- matplotlib 3.7.1
+- numpy 1.23.5
+- pandas 1.5.3
+- pytorch-lightning 2.1.0
+- seaborn 0.12.2
+- tensorboard 2.13.0
+- torch 2.1.0
+- torchmetrics 1.2.0
 
 The dependencies can also be found in requirements.txt.
 
@@ -73,7 +73,7 @@ The project directory structure is organized as follows:
    - Execute the Project: Within the Docker container, you can run your project's scripts, such as the training script, by executing:
 
         ```
-        python train.py
+        python src/train.py
         ```
 
      Replace `train.py` with the respective script name for other tasks like prediction and evaluation.

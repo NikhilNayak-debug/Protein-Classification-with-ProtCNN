@@ -1,8 +1,8 @@
 # Use an official Python runtime as a parent image
-FROM python:3.7.4
+FROM python:3.10.12
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /Users/nikhil/instadeep-test
 
 # Copy the requirements.txt file into the container
 COPY requirements.txt .
@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Define the command to run when the container starts
-CMD ["python", "train.py"]
+CMD ["python", "src/train.py"]
