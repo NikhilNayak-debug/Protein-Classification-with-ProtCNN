@@ -3,6 +3,7 @@ import torch
 import pytorch_lightning as pl
 from data_preprocessing import fam2label, dataloaders
 from model_definition import ProtCNN
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 if __name__ == "__main__":
 
@@ -28,11 +29,22 @@ if __name__ == "__main__":
 
     pl.seed_everything(0)
 
+    checkpoint_callback = ModelCheckpoint(
+        dirpath='./models',  # Directory to save checkpoints
+        filename='model-{epoch:02d}-{val_loss:.2f}',
+        monitor='val_loss',  # Metric to monitor for saving the best model
+        mode='min',  # 'min' or 'max' depending on the monitored metric
+        save_top_k=1,  # Save only the best model
+        verbose=True
+    )
+
+    callbacks = [checkpoint_callback]
+
     if torch.cuda.is_available():
         gpus = 1
         accelerator = 'gpu'
-        trainer = pl.Trainer(devices=gpus, accelerator="gpu", max_epochs=args.epochs)
+        trainer = pl.Trainer(devices=gpus, accelerator="gpu", max_epochs=args.epochs, callbacks=callbacks)
     else:
-        trainer = pl.Trainer(max_epochs=args.epochs)
+        trainer = pl.Trainer(max_epochs=args.epochs, callbacks=callbacks)
 
     trainer.fit(prot_cnn, dataloaders['train'], dataloaders['dev'])

@@ -80,9 +80,9 @@ The project directory structure is organized as follows:
 
 2. **Data Preprocessing**: Data preprocessing is handled in the `data_preprocessing.py` script. Ensure that you have the data in the appropriate format in the data directory.
 
-3. **Model Definition**: The model architecture is defined in the `model_definition.py` script. You can customize the model's hyperparameters in this script.
+3. **Model Definition**: The model architecture is defined in the `model_definition.py` script. You can customize the model's hyperparameters in this script. In comparison to the original model, the number of residual blocks has been increased and added at two points in the network, with an increased kernel size and the same number of filters per layer as the original model.
 
-4. **Training**: To train the model, execute the `train.py` script. You can adjust training hyperparameters, such as the number of epochs, learning rate, and optimizer, as well as model architecture hyperparameters, including the number of residual blocks, number of filters, and kernel size, via command-line arguments.
+4. **Training**: To train the model, execute the `train.py` script. You can adjust training hyperparameters, such as the number of epochs, learning rate, and optimizer, as well as model architecture hyperparameters, including the number of residual blocks, number of filters, and kernel size, via command-line arguments. In comparison to the original model, the optimizer is now Adam, and the number of epochs for training has been changed.
 
     Example CLI usage:
        ```
