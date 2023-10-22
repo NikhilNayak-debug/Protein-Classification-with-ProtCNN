@@ -1,6 +1,5 @@
 import argparse
 import torch
-import pandas as pd
 from torch.utils.data import DataLoader
 from model_definition import ProtCNN  # Import your model definition
 from data_preprocessing import SequenceDataset, word2id, fam2label, seq_max_len  # Import your data preprocessing functions
