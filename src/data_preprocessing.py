@@ -7,7 +7,7 @@ import seaborn as sns
 import torch
 
 
-data_dir = './random_split'
+data_dir = './data/random_split'
 
 def reader(partition, data_path):
     data = []

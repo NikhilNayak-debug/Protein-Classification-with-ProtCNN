@@ -1,6 +1,6 @@
 import unittest
 import torch
-from your_project.model_definition import ProtCNN
+from src.model_definition import ProtCNN
 from src.data_preprocessing import SequenceDataset, word2id, fam2label, seq_max_len, data_dir
 
 
@@ -15,11 +15,10 @@ class TestModelHealth(unittest.TestCase):
 
         num_classes = len(fam2label)
         num_res_blocks = 2
-        num_filters = 128
         kernel_size = 3
         learning_rate = 1e-2
         optimizer = 'adam'
-        prot_cnn = ProtCNN(num_classes, num_res_blocks, num_filters, kernel_size, learning_rate, optimizer)  # Define your_num_classes and other arguments
+        prot_cnn = ProtCNN(num_classes, num_res_blocks, kernel_size, learning_rate, optimizer)  # Define your_num_classes and other arguments
 
         batch = next(iter(dataloader))
         batch_shape = batch["sequence"].shape

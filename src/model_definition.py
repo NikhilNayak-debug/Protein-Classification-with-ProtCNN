@@ -44,24 +44,29 @@ class ResidualBlock(torch.nn.Module):
         x1 = self.conv1(activation)
         x2 = self.conv2(F.relu(self.bn2(x1)))
 
+        # Adjust x2 to match the shape of x1 if needed
+        if x2.shape != x.shape:
+            # You can perform a convolution, pooling, or any other operation to adjust the shape
+            x2 = F.interpolate(x2, size=x.shape[-1])
+
         return x2 + self.skip(x)
 
 class ProtCNN(pl.LightningModule):
 
-    def __init__(self, num_classes, num_res_blocks, num_filters, kernel_size, learning_rate, optimizer):
+    def __init__(self, num_classes, num_res_blocks, kernel_size, learning_rate, optimizer):
         super().__init__()
-        residual_blocks = [ResidualBlock(num_filters, num_filters, kernel_size, dilation=i + 2) for i in
+        residual_blocks = [ResidualBlock(128, 128, kernel_size, dilation=i + 2) for i in
                            range(num_res_blocks)]
-        residual_blocks_second = [ResidualBlock(num_filters, num_filters, kernel_size, dilation=i + 2) for i in
+        residual_blocks_second = [ResidualBlock(128, 128, kernel_size, dilation=i + 2) for i in
                            range(num_res_blocks)]
         self.model = torch.nn.Sequential(
-            torch.nn.Conv1d(22, num_filters, kernel_size=1, padding=0, bias=False),
+            torch.nn.Conv1d(22, 128, kernel_size=1, padding=0, bias=False),
             *residual_blocks,
             torch.nn.MaxPool1d(3, stride=2, padding=1),
             *residual_blocks_second,
             torch.nn.MaxPool1d(3, stride=2, padding=1),
             Lambda(lambda x: x.flatten(start_dim=1)),
-            torch.nn.Linear(7680, num_classes)
+            torch.nn.Linear(3840, num_classes)
         )
 
         self.train_acc = torchmetrics.Accuracy(task="multiclass", num_classes=num_classes)

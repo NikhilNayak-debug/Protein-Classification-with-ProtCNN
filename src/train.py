@@ -1,6 +1,8 @@
 import argparse
 import torch
 import pytorch_lightning as pl
+from data_preprocessing import fam2label, dataloaders
+from model_definition import ProtCNN
 
 if __name__ == "__main__":
 
@@ -14,14 +16,13 @@ if __name__ == "__main__":
 
     # Model-related hyperparameters
     parser.add_argument('--num_res_blocks', type=int, default=3, help='Number of residual blocks in the model')
-    parser.add_argument('--num_filters', type=int, default=128, help='Number of convolutional filters in the model')
     parser.add_argument('--kernel_size', type=int, default=3, help='Kernel size for convolutional layers')
 
     args = parser.parse_args()
 
     num_classes = len(fam2label)
 
-    prot_cnn = ProtCNN(num_classes, args.num_res_blocks, args.num_filters, args.kernel_size, args.learning_rate, args.optimizer)
+    prot_cnn = ProtCNN(num_classes, args.num_res_blocks, args.kernel_size, args.learning_rate, args.optimizer)
 
     print('Peek at the model architecture:\n', prot_cnn)
 
