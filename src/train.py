@@ -32,7 +32,7 @@ if __name__ == "__main__":
     checkpoint_callback = ModelCheckpoint(
         dirpath='./models',  # Directory to save checkpoints
         filename='model-{epoch:02d}-{val_loss:.2f}',
-        monitor='val_loss',  # Metric to monitor for saving the best model
+        monitor='valid_acc',  # Metric to monitor for saving the best model
         mode='min',  # 'min' or 'max' depending on the monitored metric
         save_top_k=1,  # Save only the best model
         verbose=True

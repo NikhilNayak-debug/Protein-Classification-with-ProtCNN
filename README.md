@@ -101,6 +101,11 @@ The project directory structure is organized as follows:
 ## Unit Tests
 
 Unit tests are available in the `tests` directory to validate the functionality of key components of the codebase. Use these tests to ensure that data preprocessing, model evaluation, and other critical parts of the code are functioning as expected.
+    
+    Example CLI usage from root of the project:
+    ```
+    python -m tests.test_dataset_creation
+    ```
 
 ## Acknowledgments
 
