@@ -16,5 +16,6 @@ def create_project_structure():
 
 
 if __name__ == "__main__":
+
     project_root = 'instadeep-test'
     create_project_structure()
