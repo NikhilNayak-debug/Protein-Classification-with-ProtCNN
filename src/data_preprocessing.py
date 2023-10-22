@@ -85,95 +85,93 @@ class SequenceDataset(torch.utils.data.Dataset):
         return one_hot_seq
 
 
-if __name__ == "__main__":
+train_data, train_targets = reader("train", data_dir)       # loading train dataset
+print("Peek at few sequences in train dataset:\n", train_data.head())
+fam2label = build_labels(train_targets)     # building labels i.e. y for train dataset
+print("Size of train dataset:", len(train_targets))
 
-    train_data, train_targets = reader("train", data_dir)       # loading train dataset
-    print("Peek at few sequences in train dataset:\n", train_data.head())
-    fam2label = build_labels(train_targets)     # building labels i.e. y for train dataset
-    print("Size of train dataset:", len(train_targets))
+# Data exploration and analysis: a few plots to understand the data at hand
 
-    # Data exploration and analysis: a few plots to understand the data at hand
+# Plot for the distribution of family sizes
+# From below plot, one can see that the provided dataset is heavily imbalanced:
+# some families have up to roughly 3k samples while others only have around ten samples.
 
-    # Plot for the distribution of family sizes
-    # From below plot, one can see that the provided dataset is heavily imbalanced:
-    # some families have up to roughly 3k samples while others only have around ten samples.
+f, ax = plt.subplots(figsize=(8, 5))
 
-    f, ax = plt.subplots(figsize=(8, 5))
+sorted_targets = train_targets.groupby(train_targets).size().sort_values(ascending=False)
 
-    sorted_targets = train_targets.groupby(train_targets).size().sort_values(ascending=False)
+sns.histplot(sorted_targets.values, kde=True, log_scale=True, ax=ax)
 
-    sns.histplot(sorted_targets.values, kde=True, log_scale=True, ax=ax)
+plt.title("Distribution of family sizes for the 'train' split")
+plt.xlabel("Family size (log scale)")
+plt.ylabel("# Families")
+plt.show()
 
-    plt.title("Distribution of family sizes for the 'train' split")
-    plt.xlabel("Family size (log scale)")
-    plt.ylabel("# Families")
-    plt.show()
+# Plot for the distribution of sequences' lengths
+# One can observe that the sequences' lengths are quite different over the dataset.
 
-    # Plot for the distribution of sequences' lengths
-    # One can observe that the sequences' lengths are quite different over the dataset.
+f, ax = plt.subplots(figsize=(8, 5))
 
-    f, ax = plt.subplots(figsize=(8, 5))
+sequence_lengths = train_data.str.len()
+median = sequence_lengths.median()
+mean = sequence_lengths.mean()
 
-    sequence_lengths = train_data.str.len()
-    median = sequence_lengths.median()
-    mean = sequence_lengths.mean()
+sns.histplot(sequence_lengths.values, kde=True, log_scale=True, bins=60, ax=ax)
 
-    sns.histplot(sequence_lengths.values, kde=True, log_scale=True, bins=60, ax=ax)
+ax.axvline(mean, color='r', linestyle='-', label=f"Mean = {mean:.1f}")
+ax.axvline(median, color='g', linestyle='-', label=f"Median = {median:.1f}")
 
-    ax.axvline(mean, color='r', linestyle='-', label=f"Mean = {mean:.1f}")
-    ax.axvline(median, color='g', linestyle='-', label=f"Median = {median:.1f}")
+plt.title("Distribution of sequence lengths")
+plt.xlabel("Sequence' length (log scale)")
+plt.ylabel("# Sequences")
+plt.legend(loc="best")
+plt.show()
 
-    plt.title("Distribution of sequence lengths")
-    plt.xlabel("Sequence' length (log scale)")
-    plt.ylabel("# Sequences")
-    plt.legend(loc="best")
-    plt.show()
+# Plot for the distribution of AA frequencies
+# Eventually, one can observe that some amino acids (X, U, B, O, Z) are quite rare compared to other ones.
+# We choose to consider those rare amino acids as unknown (<unk>) amino acids but this can be changed.
 
-    # Plot for the distribution of AA frequencies
-    # Eventually, one can observe that some amino acids (X, U, B, O, Z) are quite rare compared to other ones.
-    # We choose to consider those rare amino acids as unknown (<unk>) amino acids but this can be changed.
+f, ax = plt.subplots(figsize=(8, 5))
 
-    f, ax = plt.subplots(figsize=(8, 5))
+amino_acid_counter = get_amino_acid_frequencies(train_data)
 
-    amino_acid_counter = get_amino_acid_frequencies(train_data)
+sns.barplot(x='AA', y='Frequency', data=amino_acid_counter.sort_values(by=['Frequency'], ascending=False), ax=ax)
 
-    sns.barplot(x='AA', y='Frequency', data=amino_acid_counter.sort_values(by=['Frequency'], ascending=False), ax=ax)
+plt.title("Distribution of AAs' frequencies in the 'train' split")
+plt.xlabel("Amino acid codes")
+plt.ylabel("Frequency (log scale)")
+plt.yscale("log")
+plt.show()
 
-    plt.title("Distribution of AAs' frequencies in the 'train' split")
-    plt.xlabel("Amino acid codes")
-    plt.ylabel("Frequency (log scale)")
-    plt.yscale("log")
-    plt.show()
+word2id = build_vocab(train_data)       # building word to index mapping from the training data
+print(f"AA dictionary formed. The length of dictionary is: {len(word2id)}.")
 
-    word2id = build_vocab(train_data)       # building word to index mapping from the training data
-    print(f"AA dictionary formed. The length of dictionary is: {len(word2id)}.")
+# Building train, validation, and test dataset
+seq_max_len = 120
+train_dataset = SequenceDataset(word2id, fam2label, seq_max_len, data_dir, "train")
+dev_dataset = SequenceDataset(word2id, fam2label, seq_max_len, data_dir, "dev")
+test_dataset = SequenceDataset(word2id, fam2label, seq_max_len, data_dir, "test")
 
-    # Building train, validation, and test dataset
-    seq_max_len = 120
-    train_dataset = SequenceDataset(word2id, fam2label, seq_max_len, data_dir, "train")
-    dev_dataset = SequenceDataset(word2id, fam2label, seq_max_len, data_dir, "dev")
-    test_dataset = SequenceDataset(word2id, fam2label, seq_max_len, data_dir, "test")
+batch_size = 1
+num_workers = 8
 
-    batch_size = 1
-    num_workers = 8
-
-    # Building data loaders for each of the 3 datasets
-    dataloaders = {}
-    dataloaders['train'] = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-        num_workers=num_workers,
-    )
-    dataloaders['dev'] = torch.utils.data.DataLoader(
-        dev_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-    )
-    dataloaders['test'] = torch.utils.data.DataLoader(
-        test_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-    )
+# Building data loaders for each of the 3 datasets
+dataloaders = {}
+dataloaders['train'] = torch.utils.data.DataLoader(
+    train_dataset,
+    batch_size=batch_size,
+    shuffle=True,
+    num_workers=num_workers,
+)
+dataloaders['dev'] = torch.utils.data.DataLoader(
+    dev_dataset,
+    batch_size=batch_size,
+    shuffle=False,
+    num_workers=num_workers,
+)
+dataloaders['test'] = torch.utils.data.DataLoader(
+    test_dataset,
+    batch_size=batch_size,
+    shuffle=False,
+    num_workers=num_workers,
+)
