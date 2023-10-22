@@ -56,7 +56,7 @@ The project directory structure is organized as follows:
 
 3. **Model Definition**: The model architecture is defined in the `model_definition.py` script. You can customize the model's hyperparameters in this script.
 
-4. **Training**: To train the model, execute the `train.py` script. You can adjust training hyperparameters such as the number of epochs, learning rate, and batch size via command-line arguments.
+4. **Training**: To train the model, execute the `train.py` script. You can adjust training hyperparameters such as the number of epochs, learning rate, and optimizer via command-line arguments.
 
     Example CLI usage:
        ```
