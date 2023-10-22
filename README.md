@@ -52,6 +52,32 @@ The project directory structure is organized as follows:
 
 1. **Environment Setup**: You can set up a local development environment using Docker. Refer to the provided Dockerfile for environment setup.
 
+   - Build the Docker Image: Open a terminal and navigate to your project's root directory. Run the following command to build the Docker image, replacing "my-project" with a suitable name for your Docker image:
+    
+        ```
+        docker build -t my-project .
+        ```
+
+   - Run the Docker Container: Once the image is built, you can run a Docker container with the following command, replacing "my-project-container" with a name for your Docker container:
+
+        ```
+        docker run -it --name my-project-container my-project
+        ```
+
+   - Access the Container: You can access the running container by running a shell inside it. Use this command to interact with the environment inside the container:
+
+        ```
+        docker exec -it my-project-container /bin/bash
+        ```
+
+   - Execute the Project: Within the Docker container, you can run your project's scripts, such as the training script, by executing:
+
+        ```
+        python train.py
+        ```
+
+     Replace `train.py` with the respective script name for other tasks like prediction and evaluation.
+
 2. **Data Preprocessing**: Data preprocessing is handled in the `data_preprocessing.py` script. Ensure that you have the data in the appropriate format in the data directory.
 
 3. **Model Definition**: The model architecture is defined in the `model_definition.py` script. You can customize the model's hyperparameters in this script.
