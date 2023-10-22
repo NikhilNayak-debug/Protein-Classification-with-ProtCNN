@@ -48,9 +48,13 @@ class ProtCNN(pl.LightningModule):
         super().__init__()
         residual_blocks = [ResidualBlock(num_filters, num_filters, kernel_size, dilation=i + 2) for i in
                            range(num_res_blocks)]
+        residual_blocks_second = [ResidualBlock(num_filters, num_filters, kernel_size, dilation=i + 2) for i in
+                           range(num_res_blocks)]
         self.model = torch.nn.Sequential(
             torch.nn.Conv1d(22, num_filters, kernel_size=1, padding=0, bias=False),
             *residual_blocks,
+            torch.nn.MaxPool1d(3, stride=2, padding=1),
+            *residual_blocks_second,
             torch.nn.MaxPool1d(3, stride=2, padding=1),
             Lambda(lambda x: x.flatten(start_dim=1)),
             torch.nn.Linear(7680, num_classes)

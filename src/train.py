@@ -12,7 +12,7 @@ if __name__ == "__main__":
                         help='Optimizer type (Adam or SGD)')
 
     # Model-related hyperparameters
-    parser.add_argument('--num_res_blocks', type=int, default=2, help='Number of residual blocks in the model')
+    parser.add_argument('--num_res_blocks', type=int, default=3, help='Number of residual blocks in the model')
     parser.add_argument('--num_filters', type=int, default=128, help='Number of convolutional filters in the model')
     parser.add_argument('--kernel_size', type=int, default=3, help='Kernel size for convolutional layers')
 
