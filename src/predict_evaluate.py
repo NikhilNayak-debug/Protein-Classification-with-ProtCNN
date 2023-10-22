@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # Model and Data Paths
     parser.add_argument('--model_path', type=str, required=True, help='Path to the trained model checkpoint')
     parser.add_argument('--data_path', type=str, required=True, help='Path to the data for prediction/evaluation')
-    parser.add_argument('--filename', type=str, required=True, help='Filename for prediction/evaluation')
+    parser.add_argument('--dir_name', type=str, required=True, help='Directory for prediction/evaluation files')
 
     args = parser.parse_args()
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     model = load_model(args.model_path)
 
     # Load data for prediction/evaluation
-    dataset = SequenceDataset(word2id, fam2label, seq_max_len, args.data_path, args.filename)
+    dataset = SequenceDataset(word2id, fam2label, seq_max_len, args.data_path, args.dir_name)
     data_loader = DataLoader(dataset, batch_size=32, shuffle=False)
 
     # Make predictions
